@@ -1,6 +1,6 @@
-'use strict';
+"use strict";
 
-System.register(['./piechart_ctrl', 'app/plugins/sdk'], function (_export, _context) {
+System.register(["./piechart_ctrl", "app/plugins/sdk"], function (_export, _context) {
   "use strict";
 
   var PieChartCtrl, loadPluginCss;
@@ -11,13 +11,12 @@ System.register(['./piechart_ctrl', 'app/plugins/sdk'], function (_export, _cont
       loadPluginCss = _appPluginsSdk.loadPluginCss;
     }],
     execute: function () {
-
       loadPluginCss({
         dark: 'plugins/grafana-piechart-panel/css/piechart.dark.css',
         light: 'plugins/grafana-piechart-panel/css/piechart.light.css'
       });
 
-      _export('PanelCtrl', PieChartCtrl);
+      _export("PanelCtrl", PieChartCtrl);
     }
   };
 });

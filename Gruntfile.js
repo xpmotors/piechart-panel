@@ -40,8 +40,8 @@ module.exports = function(grunt) {
     babel: {
       options: {
         sourceMap: true,
-        presets:  ["es2015"],
-        plugins: ['transform-es2015-modules-systemjs', "transform-es2015-for-of"],
+        presets:  ["@babel/preset-env"],
+        plugins: ['@babel/plugin-transform-modules-systemjs', "@babel/plugin-transform-for-of"],
       },
       dist: {
         files: [{

@@ -1,6 +1,6 @@
-'use strict';
+"use strict";
 
-System.register(['lodash', 'jquery', 'jquery.flot', 'jquery.flot.pie'], function (_export, _context) {
+System.register(["lodash", "jquery", "jquery.flot", "jquery.flot.pie"], function (_export, _context) {
   "use strict";
 
   var _, $;
@@ -9,14 +9,8 @@ System.register(['lodash', 'jquery', 'jquery.flot', 'jquery.flot.pie'], function
     var data, panel;
     elem = elem.find('.piechart-panel__chart');
     var $tooltip = $('<div id="tooltip">');
-
     ctrl.events.on('render', function () {
-      render(false);
-      if (panel.legendType === 'Right side') {
-        setTimeout(function () {
-          render(true);
-        }, 50);
-      }
+      render();
     });
 
     function getLegendHeight(panelHeight) {
@@ -39,6 +33,7 @@ System.register(['lodash', 'jquery', 'jquery.flot', 'jquery.flot.pie'], function
       if (ctrl.panel.legend.percentageDecimals) {
         decimal = ctrl.panel.legend.percentageDecimals;
       }
+
       if (ctrl.panel.legend.values && ctrl.panel.legend.percentage) {
         return start + ctrl.formatValue(slice_data) + "<br/>" + slice.percent.toFixed(decimal) + "%</div>";
       } else if (ctrl.panel.legend.values) {
@@ -58,9 +53,7 @@ System.register(['lodash', 'jquery', 'jquery.flot', 'jquery.flot.pie'], function
     function addPieChart() {
       var width = elem.width();
       var height = ctrl.height - getLegendHeight(ctrl.height);
-
       var size = Math.min(width, height);
-
       var plotCanvas = $('<div></div>');
       var plotCss = {
         margin: 'auto',
@@ -68,11 +61,8 @@ System.register(['lodash', 'jquery', 'jquery.flot', 'jquery.flot.pie'], function
         paddingBottom: 20 + 'px',
         height: size + 'px'
       };
-
       plotCanvas.css(plotCss);
-
       var backgroundColor = $('body').css('background-color');
-
       var options = {
         legend: {
           show: false
@@ -110,9 +100,8 @@ System.register(['lodash', 'jquery', 'jquery.flot', 'jquery.flot.pie'], function
       data = ctrl.data;
 
       for (var i = 0; i < data.length; i++) {
-        var series = data[i];
+        var series = data[i]; // if hidden remove points
 
-        // if hidden remove points
         if (ctrl.hiddenSeries[series.label]) {
           series.data = {};
         }
@@ -122,6 +111,7 @@ System.register(['lodash', 'jquery', 'jquery.flot', 'jquery.flot.pie'], function
         if (ctrl.panel.valueName !== panel.legend.sort) {
           panel.legend.sort = ctrl.panel.valueName;
         }
+
         if (panel.legend.sortDesc === true) {
           data.sort(function (a, b) {
             return b.legendData - a.legendData;
@@ -134,7 +124,6 @@ System.register(['lodash', 'jquery', 'jquery.flot', 'jquery.flot.pie'], function
       }
 
       elem.html(plotCanvas);
-
       $.plot(plotCanvas, data, options);
       plotCanvas.bind("plothover", function (event, pos, item) {
         if (!item) {
@@ -145,17 +134,15 @@ System.register(['lodash', 'jquery', 'jquery.flot', 'jquery.flot.pie'], function
         var body;
         var percent = parseFloat(item.series.percent).toFixed(2);
         var formatted = ctrl.formatValue(item.series.data[0][1]);
-
         body = '<div class="piechart-tooltip-small"><div class="piechart-tooltip-time">';
         body += '<div class="piechart-tooltip-value">' + item.series.label + ': ' + formatted;
         body += " (" + percent + "%)" + '</div>';
         body += "</div></div>";
-
         $tooltip.html(body).place_tt(pos.pageX + 20, pos.pageY);
       });
     }
 
-    function render(incrementRenderCounter) {
+    function render() {
       if (!ctrl.data) {
         return;
       }
@@ -169,13 +156,11 @@ System.register(['lodash', 'jquery', 'jquery.flot', 'jquery.flot.pie'], function
         addPieChart();
       }
 
-      if (incrementRenderCounter) {
-        ctrl.renderingCompleted();
-      }
+      ctrl.renderingCompleted();
     }
   }
 
-  _export('default', link);
+  _export("default", link);
 
   return {
     setters: [function (_lodash) {

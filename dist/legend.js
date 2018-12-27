@@ -15,7 +15,6 @@ System.register(["angular", "app/core/utils/kbn", "jquery", "jquery.flot", "jque
       PerfectScrollbar = _libPerfectScrollbarMin.default;
     }],
     execute: function () {
-
       angular.module("grafana.directives").directive("piechartLegend", function (popoverSrv, $timeout) {
         return {
           link: function link(scope, elem) {
@@ -28,19 +27,19 @@ System.register(["angular", "app/core/utils/kbn", "jquery", "jquery.flot", "jque
             var dataList;
             var i;
             var legendScrollbar;
-
             scope.$on("$destroy", function () {
               if (legendScrollbar) {
                 legendScrollbar.destroy();
               }
             });
-
             ctrl.events.on("render", function () {
               data = ctrl.series;
+
               if (data) {
                 for (var i in data) {
                   data[i].color = ctrl.data[i].color;
                 }
+
                 render();
               }
             });
@@ -64,9 +63,9 @@ System.register(["angular", "app/core/utils/kbn", "jquery", "jquery.flot", "jque
 
               if (stat !== panel.legend.sort) {
                 panel.legend.sortDesc = null;
-              }
+              } // if already sort ascending, disable sorting
 
-              // if already sort ascending, disable sorting
+
               if (panel.legend.sortDesc === false) {
                 panel.legend.sort = null;
                 panel.legend.sortDesc = null;
@@ -117,7 +116,6 @@ System.register(["angular", "app/core/utils/kbn", "jquery", "jquery.flot", "jque
               var el = $(e.currentTarget).find(".fa-minus");
               var index = getSeriesIndexForElement(el);
               var series = seriesList[index];
-
               $timeout(function () {
                 popoverSrv.show({
                   element: el[0],
@@ -155,34 +153,34 @@ System.register(["angular", "app/core/utils/kbn", "jquery", "jquery.flot", "jque
 
               seriesList = data;
               dataList = ctrl.data;
-
               $container.empty();
-
               var width = panel.legendType == "Right side" && panel.legend.sideWidth ? panel.legend.sideWidth + "px" : "";
               var ieWidth = panel.legendType == "Right side" && panel.legend.sideWidth ? panel.legend.sideWidth - 1 + "px" : "";
               elem.css("min-width", width);
               elem.css("width", ieWidth);
-
               var showValues = panel.legend.values || panel.legend.percentage;
               var tableLayout = (panel.legendType === "Under graph" || panel.legendType === "Right side") && showValues;
-
               $container.toggleClass("piechart-legend-table", tableLayout);
-
               var legendHeader;
+
               if (tableLayout) {
                 var header = '<tr><th colspan="2" style="text-align:left"></th>';
+
                 if (panel.legend.values) {
                   header += getLegendHeaderHtml(ctrl.panel.valueName);
                 }
+
                 if (panel.legend.percentage) {
                   header += getLegendPercentageHtml(ctrl.panel.valueName);
                 }
+
                 header += "</tr>";
                 legendHeader = $(header);
               }
 
               if (panel.legend.percentage) {
                 var total = 0;
+
                 for (i = 0; i < seriesList.length; i++) {
                   total += seriesList[i].stats[ctrl.panel.valueName];
                 }
@@ -193,38 +191,42 @@ System.register(["angular", "app/core/utils/kbn", "jquery", "jquery.flot", "jque
 
               for (i = 0; i < seriesList.length; i++) {
                 var series = seriesList[i];
-                var seriesData = dataList[i];
+                var seriesData = dataList[i]; // ignore empty series
 
-                // ignore empty series
                 if (panel.legend.hideEmpty && series.allIsNull) {
                   continue;
-                }
-                // ignore series excluded via override
+                } // ignore series excluded via override
+
+
                 if (!series.legend) {
                   continue;
                 }
 
                 var decimal = 0;
+
                 if (ctrl.panel.legend.percentageDecimals) {
                   decimal = ctrl.panel.legend.percentageDecimals;
                 }
 
                 var html = '<div class="piechart-legend-series';
+
                 if (ctrl.hiddenSeries[seriesData.label]) {
                   html += " piechart-legend-series-hidden";
                 }
+
                 html += '" data-series-index="' + i + '">';
                 html += '<span class="piechart-legend-icon" style="float:none;">';
                 html += '<i class="fa fa-minus pointer" style="color:' + seriesData.color + '"></i>';
                 html += "</span>";
-
                 html += '<a class="piechart-legend-alias" style="float:none;">' + seriesData.label + "</a>";
 
                 if (showValues && tableLayout) {
                   var value = seriesData.legendData;
+
                   if (panel.legend.values) {
                     html += '<div class="piechart-legend-value">' + ctrl.formatValue(value) + "</div>";
                   }
+
                   if (total) {
                     var pvalue = (value / total * 100).toFixed(decimal) + "%";
                     html += '<div class="piechart-legend-value">' + pvalue + "</div>";
@@ -232,14 +234,14 @@ System.register(["angular", "app/core/utils/kbn", "jquery", "jquery.flot", "jque
                 }
 
                 html += "</div>";
-
                 seriesElements.push($(html));
                 seriesShown++;
               }
+
               if (tableLayout) {
                 var topPadding = 6;
-                var tbodyElem = $("<tbody></tbody>");
-                // tbodyElem.css("max-height", maxHeight - topPadding);
+                var tbodyElem = $("<tbody></tbody>"); // tbodyElem.css("max-height", maxHeight - topPadding);
+
                 tbodyElem.append(legendHeader);
                 tbodyElem.append(seriesElements);
                 $container.append(tbodyElem);
@@ -253,6 +255,7 @@ System.register(["angular", "app/core/utils/kbn", "jquery", "jquery.flot", "jque
                 destroyScrollbar();
               }
             }
+
             function addScrollbar() {
               var scrollbarOptions = {
                 // Number of pixels the content height can surpass the container height without enabling the scroll bar.
